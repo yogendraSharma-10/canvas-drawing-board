@@ -1,0 +1,464 @@
+/*
+ * style.css
+ *
+ * Main stylesheet for the Canvas Drawing Board application.
+ * Defines the overall layout, styling for tools, canvas, and interactive elements.
+ *
+ * Project: Canvas Drawing Board
+ * Tech Stack: HTML, CSS, JavaScript
+ */
+
+/* --- CSS Variables --- */
+:root {
+    --primary-color: #4CAF50; /* Green */
+    --primary-dark-color: #388E3C;
+    --secondary-color: #FFC107; /* Amber */
+    --accent-color: #2196F3; /* Blue */
+    --background-color: #f0f2f5; /* Light grey-blue */
+    --panel-background-color: #ffffff;
+    --border-color: #e0e0e0;
+    --text-color: #333333;
+    --text-light-color: #666666;
+    --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --toolbar-width: 280px;
+    --header-height: 60px;
+}
+
+/* --- Base Styles & Reset --- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Roboto', sans-serif; /* Using a common web font */
+    color: var(--text-color);
+    background-color: var(--background-color);
+    overflow: hidden; /* Prevent scrolling on main body */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Header --- */
+header {
+    background-color: var(--panel-background-color);
+    color: var(--text-color);
+    padding: 0 20px;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-light);
+    z-index: 100; /* Ensure header is above other content */
+}
+
+header h1 {
+    font-size: 1.8em;
+    font-weight: 500;
+    color: var(--primary-dark-color);
+    display: flex;
+    align-items: center;
+}
+
+header h1 svg {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.header-actions button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.header-actions button:hover {
+    background-color: #1976D2; /* Darker blue */
+}
+
+.header-actions button:active {
+    transform: translateY(1px);
+}
+
+/* --- Main Layout --- */
+main {
+    flex: 1;
+    display: flex;
+    overflow: hidden; /* Important for canvas container scrolling */
+}
+
+/* --- Toolbar (Sidebar) --- */
+#toolbar {
+    width: var(--toolbar-width);
+    background-color: var(--panel-background-color);
+    padding: 20px;
+    box-shadow: var(--shadow-medium);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    overflow-y: auto; /* Allow scrolling if toolbar content is too long */
+    flex-shrink: 0; /* Prevent toolbar from shrinking */
+}
+
+#toolbar section {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+}
+
+#toolbar section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+#toolbar h3 {
+    font-size: 1.1em;
+    color: var(--text-light-color);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+/* Tool Buttons Grid */
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 10px;
+}
+
+.tool-button {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    padding: 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 0.8em;
+    color: var(--text-light-color);
+    transition: all 0.2s ease;
+    min-height: 70px;
+}
+
+.tool-button svg {
+    font-size: 1.5em;
+    color: var(--text-light-color);
+}
+
+.tool-button:hover {
+    background-color: #e8eaf6; /* Light blue-grey */
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.tool-button:hover svg {
+    color: var(--accent-color);
+}
+
+.tool-button.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-dark-color);
+    color: white;
+    box-shadow: var(--shadow-light);
+}
+
+.tool-button.active svg {
+    color: white;
+}
+
+/* Tool Options */
+.tool-option-group {
+    margin-bottom: 15px;
+}
+
+.tool-option-group label {
+    display: block;
+    font-size: 0.9em;
+    color: var(--text-light-color);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.tool-option-group input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none; /* Override default look */
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.tool-option-group input[type="range"]:hover {
+    opacity: 1;
+}
+
+.tool-option-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    box-shadow: var(--shadow-light);
+}
+
+.tool-option-group input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    box-shadow: var(--shadow-light);
+}
+
+.tool-option-group input[type="number"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9em;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    transition: border-color 0.2s ease;
+}
+
+.tool-option-group input[type="number"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background-color: white;
+}
+
+/* Color Picker */
+.color-picker-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#color-picker {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+#color-picker::-webkit-color-swatch {
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+#color-picker::-moz-color-swatch {
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.color-display {
+    flex: 1;
+    height: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: #000000; /* Default black */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9em;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Fill/Stroke Toggle */
+.fill-stroke-toggle {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.fill-stroke-toggle button {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--background-color);
+    color: var(--text-light-color);
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+}
+
+.fill-stroke-toggle button.active {
+    background-color: var(--accent-color);
+    border-color: #1976D2;
+    color: white;
+}
+
+.fill-stroke-toggle button:hover:not(.active) {
+    background-color: #e8eaf6;
+    border-color: var(--accent-color);
+}
+
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-buttons button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.action-buttons button:hover {
+    background-color: #1976D2;
+}
+
+.action-buttons button:active {
+    transform: translateY(1px);
+}
+
+.action-buttons button.secondary {
+    background-color: #6c757d; /* Grey */
+}
+
+.action-buttons button.secondary:hover {
+    background-color: #5a6268;
+}
+
+/* --- Canvas Area --- */
+#canvas-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto; /* Allows scrolling if canvas is larger than viewport */
+    background-color: var(--background-color);
+    position: relative; /* For potential overlays */
+    padding: 20px; /* Padding around the canvas */
+}
+
+#drawing-board {
+    background-color: white;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-medium);
+    cursor: crosshair;
+    touch-action: none; /* Prevent default touch actions like scrolling/zooming */
+}
+
+/* --- Utility Classes --- */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 992px) {
+    :root {
+        --toolbar-width: 250px;
+    }
+    header h1 {
+        font-size: 1.5em;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 20px;
+        gap: 10px;
+    }
+    header h1 {
+        font-size: 1.4em;
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+    }
+    main {
+        flex-direction: column;
+    }
+    #toolbar {
+        width: 100%;
+        max-height: 40vh; /* Limit height on smaller screens */
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: var(--shadow-light);
+        padding: 15px;
+    }
+    #toolbar section {
+        padding-bottom: 15px;
+    }
+    .tools-grid {
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+        gap: 8px;
+    }
+    .tool-button {
+        min-height: 60px;
+        padding: 8px;
+        font-size: 0.75em;
+    }
+    .tool-button svg {
+        font-size: 1.3em;
+    }
+    #canvas-container {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.2em;
+    }
+    .header-actions button {
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+    #toolbar
